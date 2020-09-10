@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        #omok {
+            border: 1px solid black;
+        }
+    </style>
+    <canvas id="omok" width="800" height="800"></canvas>
+    <script>
+        const omok = document.querySelector("#omok");
+        const ctx = omok.getContext("2d");
+        for (let j = 0; j < 10; j++) {
+            for (let i = 0; i <10; i++) {
+                const y = j * 20;
+                const x = i * 20;
+                ctx.rect(x, y, 20, 20);
+                ctx.fillStyle = "red";
+                ctx.strokeStyle - "black";
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
+        // ctx.rect(30, 30, 30 + 20, 30 + 20);
+        // ctx.fillStyle = "red";
+        // ctx.strokeStyle = "black";
+        // ctx.fill();
+        // ctx.stroke();
+    </script>
+</body>
+</html>
