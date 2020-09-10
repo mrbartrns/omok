@@ -27,7 +27,8 @@
             stoneColor: {
                 player1: '#f8faf5',
                 player2: '#121212'
-            }
+            },
+            boardColor: '#FFE4B5'
             // my stone color; player2 stone color; ...
         }
         let stoneColor = myConfig['stoneColor']['player1'];
@@ -51,7 +52,7 @@
 
         Cell.prototype.draw = function() {
             ctx.beginPath();
-            ctx.fillStyle = '#FFE4B5';
+            ctx.fillStyle = myConfig['boardColor'];
             ctx.rect(this.x, this.y, this.size, this.size);
             ctx.strokeStyle = 'black';
             ctx.fill();
