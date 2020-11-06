@@ -1,15 +1,15 @@
 const omok = document.querySelector("#omok");
 const ctx = omok.getContext("2d");
 
-// draw info
-const cellSize = 40;
-const offsetX = 40;
-const offsetY = 40;
-const stoneRadius = 17;
-const CELLS_DRAW = 18;
-
-// logic info
-const CELLS = 19;
+// info
+const cellSize = 40,
+  offsetX = 40,
+  offsetY = 40,
+  stoneRadius = 17,
+  CELLS = 19,
+  CELLS_DRAW = CELLS - 1,
+  width = omok.width,
+  height = omok.height;
 
 let lines = [];
 let player1HighScore = 0;
@@ -59,7 +59,38 @@ Stone.prototype.draw = function () {
   ctx.fill();
 };
 
-function checkCondition(row, col) {
+function gameOver() {
+  // initialize
+  lines = [];
+  player1HighScore = 0;
+  player2HighScore = 0;
+  clicked = false;
+  myTurn = true;
+
+  ctx.clearRect(0, 0, width, height);
+  requestAnimationFrame(loop);
+  makeInformation();
+  omok.addEventListener("click", drawStone);
+}
+
+function scoreCheck(p1, p2) {
+  if (p1 !== 5 && p2 !== 5) return;
+  omok.removeEventListener("click", drawStone);
+  if (p1 === 5) {
+    setTimeout(() => {
+      alert("player1 wins!");
+      gameOver();
+    }, 500);
+  } else if (p2 === 5) {
+    setTimeout(() => {
+      alert("player2 wins!");
+      gameOver();
+    }, 500);
+  }
+}
+
+function checkCondition(row, col, iter) {
+  // row: number, col: number, iter: number (int)
   // x = row, y = col
   let currentLocation = lines[row][col]; // {x, y, offsetX, offsetY, isOccupied, OccupiedType}
   let numberOfSameColorStones = 0;
@@ -67,8 +98,8 @@ function checkCondition(row, col) {
   console.log("check condition");
   // 가로줄 탐색
   for (
-    let i = col - 4 >= 0 ? col - 4 : 0;
-    i <= (col + 4 < CELLS ? col + 4 : CELLS - 1);
+    let i = col - iter >= 0 ? col - iter : 0;
+    i <= (col + iter < CELLS ? col + iter : CELLS - 1);
     i++
   ) {
     console.log("가로줄 탐색", i);
@@ -89,8 +120,8 @@ function checkCondition(row, col) {
 
   // 세로줄 탐색
   for (
-    let i = row - 4 >= 0 ? row - 4 : 0;
-    i <= (row + 4 < CELLS ? row + 4 : CELLS - 1);
+    let i = row - iter >= 0 ? row - iter : 0;
+    i <= (row + iter < CELLS ? row + iter : CELLS - 1);
     i++
   ) {
     console.log("세로줄 탐색", i);
@@ -108,7 +139,7 @@ function checkCondition(row, col) {
   temp = 0;
 
   // 대각선 탐색
-  for (let i = -4; i < 5; i++) {
+  for (let i = -iter; i < iter + 1; i++) {
     console.log("대각선 탐색 (우하향)");
     console.log(i);
     if (row + i >= 0 && col + i >= 0 && row + i < 19 && col + i < 19) {
@@ -126,7 +157,7 @@ function checkCondition(row, col) {
     }
   }
 
-  for (let i = -4; i < 5; i++) {
+  for (let i = -iter; i < iter; i++) {
     console.log("대각선 탐색 (우상향)");
     if (row - i >= 0 && col + i >= 0 && row - i < 19 && col + i < 19) {
       console.log(lines[row - i][col + i]);
@@ -154,6 +185,8 @@ function checkCondition(row, col) {
         ? numberOfSameColorStones
         : player2HighScore;
   }
+
+  scoreCheck(player1HighScore, player2HighScore);
   console.log("p1:", player1HighScore);
   console.log("p2:", player2HighScore);
 }
@@ -175,7 +208,7 @@ function drawStone(e) {
     const stone = new Stone(calibratedX, calibratedY, stoneRadius, stoneColor);
     stone.draw();
     handleCell(row, col);
-    checkCondition(row, col);
+    checkCondition(row, col, 4);
     myTurn = !myTurn;
     // console.table(lines);
     // 그린 다음에 돌이 연속으로 다섯개 놓여져 있는지 확인
